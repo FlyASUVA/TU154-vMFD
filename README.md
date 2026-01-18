@@ -3,7 +3,8 @@ A virtual MFD Style TCDU for Felis Tu154B2 (CE)
 
 # 这都是图啥呢  
 *What are all these "Tu"s anyway?* - A meme from Chinese Internet.
-![53599021dd0c215da061314add9589c9](https://github.com/user-attachments/assets/83304ca4-a408-4065-b00b-7709774ecfd3)
+
+*![53599021dd0c215da061314add9589c9](https://github.com/user-attachments/assets/83304ca4-a408-4065-b00b-7709774ecfd3)*
 
 
 **This project explores whether a legacy aircraft like the Tu-154 can be operated using modern RNAV and RNP Procedures — not by modifying the aircraft itself, but by building an external, experimental guidance system from scratch.**
