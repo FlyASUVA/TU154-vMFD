@@ -27,9 +27,9 @@ class NavDisplay:
         self.ui_state = STATE_NORMAL
         self.selected_leg_idx = -1  
         
-        # ALT AND SPEED INTV 
+        # INTERACTION STATE 
         self.press_start_time = 0
-        self.pressed_row_idx = -1
+        self.pressed_row_idx = -1 # -1: Active Panel, 0+: List Rows
         self.is_holding = False
         self.LONG_PRESS_THRESHOLD = 0.5 
         
@@ -37,15 +37,19 @@ class NavDisplay:
         self.input_is_metric = False 
         
         self.list_click_rects = [] 
-        # UP DOWN BUTTON
+        
+        # UI RECTS
         self.btn_up_rect = pygame.Rect(430, 150, 50, 60)
         self.btn_dn_rect = pygame.Rect(430, 215, 50, 60)
         self.btn_refresh_rect = pygame.Rect(0, 0, 0, 0)
         self.rect_alt_toggle = pygame.Rect(0, 0, 0, 0)
         
+        # ACTIVE PANEL TOUCH AREA (Ident + T/D)
+        self.rect_active_panel = pygame.Rect(0, 30, 140, 110)
+
         cx = SCREEN_W // 2
         
-        # 1. WPT MENU
+        # POPUP RECTS
         self.rect_menu_dct = pygame.Rect(cx-100, 80, 200, 40)
         self.rect_menu_spd = pygame.Rect(cx-100, 130, 200, 40)
         self.rect_menu_alt = pygame.Rect(cx-100, 180, 200, 40)
@@ -68,17 +72,34 @@ class NavDisplay:
             self.keypad_rects.append((rect, k))
 
     def update(self, link_data, screen):
+        # LONG PRESS LOGIC
         if self.ui_state == STATE_NORMAL and self.is_holding:
             if time.time() - self.press_start_time > self.LONG_PRESS_THRESHOLD:
-                print(f"Long press detected on row {self.pressed_row_idx}")
                 self.is_holding = False 
                 
-                base_idx = self.fms.active_idx + 1
-                real_idx = base_idx + self.scroll_offset + self.pressed_row_idx
+                # Case 1: Active Panel Long Press (-1)
+                if self.pressed_row_idx == -1:
+                    self.selected_leg_idx = self.fms.active_idx
+                    leg = self.fms.legs[self.selected_leg_idx]
+                    
+                    # Pre-fill buffer with current altitude
+                    if self.use_metric:
+                        self.input_is_metric = True
+                        self.input_buffer = str(int(leg.plan_alt * 0.3048))
+                    else:
+                        self.input_is_metric = False
+                        self.input_buffer = str(int(leg.plan_alt))
+                    
+                    self.ui_state = STATE_INPUT_ALT
                 
-                if real_idx < len(self.fms.legs):
-                    self.selected_leg_idx = real_idx
-                    self.ui_state = STATE_MENU 
+                # Case 2: List Row Long Press (0+)
+                else:
+                    base_idx = self.fms.active_idx + 1
+                    real_idx = base_idx + self.scroll_offset + self.pressed_row_idx
+                    
+                    if real_idx < len(self.fms.legs):
+                        self.selected_leg_idx = real_idx
+                        self.ui_state = STATE_MENU 
         
         self._draw_normal_view(screen, link_data)
         
@@ -95,35 +116,29 @@ class NavDisplay:
             elif self.ui_state in [STATE_INPUT_SPD, STATE_INPUT_ALT]:
                 self._draw_popup_input(screen)
 
-    # --- KEYBOARD HANDLER ---
     def handle_keydown(self, event):
-        # USE PHYSICAL KEYBOARD
         if self.ui_state not in [STATE_INPUT_SPD, STATE_INPUT_ALT]:
             return
 
-        # USE (0-9)
         if event.key >= pygame.K_0 and event.key <= pygame.K_9:
             char = str(event.key - pygame.K_0)
-            if len(self.input_buffer) < 6:
-                self.input_buffer += char
+            if len(self.input_buffer) < 6: self.input_buffer += char
         
-        # USE (Keypad 0-9)
         elif event.key >= pygame.K_KP0 and event.key <= pygame.K_KP9:
             char = str(event.key - pygame.K_KP0)
-            if len(self.input_buffer) < 6:
-                self.input_buffer += char
+            if len(self.input_buffer) < 6: self.input_buffer += char
 
-        # USE (Backspace) 
+        elif event.key == pygame.K_PERIOD or event.key == pygame.K_KP_PERIOD:
+            if "." not in self.input_buffer and len(self.input_buffer) < 6:
+                self.input_buffer += "."
+
         elif event.key == pygame.K_BACKSPACE:
             self.input_buffer = self.input_buffer[:-1]
 
-        # KEYBOARD (C) - USE Delete OR Esc
         elif event.key == pygame.K_DELETE or event.key == pygame.K_ESCAPE:
             self.input_buffer = ""
-            if event.key == pygame.K_ESCAPE:
-                self.ui_state = STATE_NORMAL # ESC TO BACK PAGE
+            if event.key == pygame.K_ESCAPE: self.ui_state = STATE_NORMAL
 
-        # KEYBOARD (Enter / Return)
         elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
             self._submit_input()
             self.ui_state = STATE_NORMAL
@@ -188,6 +203,11 @@ class NavDisplay:
         
         panel_rect = pygame.Rect(0, 30, SCREEN_W, 110)
         pygame.draw.rect(screen, (30,30,40), panel_rect)
+        
+        # Highlight if holding active panel
+        if self.is_holding and self.pressed_row_idx == -1:
+            pygame.draw.rect(screen, (60,60,70), self.rect_active_panel)
+
         pygame.draw.line(screen, C_GRAY_LIGHT, (0, 140), (SCREEN_W, 140), 2)
 
         lbl_to = self.font_s.render("FLYING TO:", True, C_GRAY_LIGHT)
@@ -197,28 +217,19 @@ class NavDisplay:
 
         if self.fms.phase in ["CRZ", "DES"]:
             td = self.fms.dist_to_td
-            
-            td_x = 10
-            td_y = 90 
-
+            td_x, td_y = 10, 90 
             if td < 0:
                 self._draw_kv(screen, "VNAV STATUS", "DES PATH", td_x, td_y, C_MAGENTA)
             else:
-                if SHOW_METRIC_DIST: val = f"{td*1.852:.0f}KM"
-                else: val = f"{td:.0f}NM"
+                val = f"{td*1.852:.0f}KM" if SHOW_METRIC_DIST else f"{td:.0f}NM"
                 self._draw_kv(screen, "TO T/D", val, td_x, td_y, C_WHITE)
 
-        col1_x = 140
-        col2_x = 240
-        col3_x = 364 
-
+        col1_x, col2_x, col3_x = 140, 240, 364 
         if is_valid:
-            if SHOW_METRIC_DIST: dist_str = f"{leg.dist_to_go * 1.852:.1f}KM"
-            else: dist_str = f"{leg.dist_to_go:.1f}NM"
+            dist_str = f"{leg.dist_to_go * 1.852:.1f}KM" if SHOW_METRIC_DIST else f"{leg.dist_to_go:.1f}NM"
             brg_str = f"{leg.bearing:03d}°"
         else:
-            dist_str = "N/A"
-            brg_str = "---"
+            dist_str, brg_str = "N/A", "---"
         
         self._draw_kv(screen, "BRG", brg_str, col1_x, 45, C_GREEN_NAV)
         self._draw_kv(screen, "REM DIST", dist_str, col1_x, 90, C_WHITE)
@@ -239,7 +250,6 @@ class NavDisplay:
             
         s_alt_val = self.font_mono.render(val_str, True, C_CYAN)
         screen.blit(s_alt_val, (col2_x, 90 + 15))
-        
         self.rect_alt_toggle = pygame.Rect(col2_x, 90, max(s_alt_lbl.get_width(), s_alt_val.get_width()), 35)
 
         phase = self.fms.phase
@@ -248,26 +258,22 @@ class NavDisplay:
         else:
             vs_fpm = leg.target_vs_fpm 
             vs_ms = vs_fpm / 196.85
-            
             if abs(vs_ms) > 0.5:
                 prefix = "+" if vs_ms > 0 else ""
                 val_str = f"{prefix}{vs_ms:.1f} m/s"
                 color = C_GREEN_NAV
             else:
-                val_str = "0.0 m/s"
-                color = C_GRAY_LIGHT
+                val_str, color = "0.0 m/s", C_GRAY_LIGHT
             self._draw_kv(screen, "TGT V/S", val_str, col3_x, 60, color, size="L")
             
             if (not self.use_metric) and abs(vs_ms) > 0.5:
-                fpm_str = f"({int(vs_fpm)} fpm)"
-                s_fpm = self.font_xs.render(fpm_str, True, C_GRAY_LIGHT)
+                s_fpm = self.font_xs.render(f"({int(vs_fpm)} fpm)", True, C_GRAY_LIGHT)
                 screen.blit(s_fpm, (col3_x, 100))
 
     def _draw_kv(self, screen, label, value, x, y, color, size="M"):
         s_lbl = self.font_xs.render(label, True, C_GRAY_LIGHT)
         screen.blit(s_lbl, (x, y))
-        if size == "L": font = self.font_m
-        else: font = self.font_mono
+        font = self.font_m if size == "L" else self.font_mono
         s_val = font.render(value, True, color)
         screen.blit(s_val, (x, y + 15))
 
@@ -307,8 +313,7 @@ class NavDisplay:
             s_trk = self.font_mono.render(f"{leg.leg_course:03d}°", True, C_GREEN_NAV)
             screen.blit(s_trk, (120, y))
             
-            if SHOW_METRIC_DIST: d_str = f"{leg.leg_dist_static * 1.852:.0f}"
-            else: d_str = f"{leg.leg_dist_static:.0f}"
+            d_str = f"{leg.leg_dist_static * 1.852:.0f}" if SHOW_METRIC_DIST else f"{leg.leg_dist_static:.0f}"
             s_dist = self.font_mono.render(d_str, True, C_GRAY_LIGHT)
             screen.blit(s_dist, (190, y))
             
@@ -316,16 +321,10 @@ class NavDisplay:
             if leg.plan_alt >= CROSSOVER_ALT and leg.plan_mach > 0.1:
                 spd_str = f".{int(leg.plan_mach * 100):02d}" 
             else:
-                if leg.plan_spd_kmh == 0: spd_str = "---"
-                else: spd_str = f"{int(leg.plan_spd_kmh)}"
+                spd_str = f"{int(leg.plan_spd_kmh)}" if leg.plan_spd_kmh != 0 else "---"
             
-            if self.use_metric:
-                alt_val = int(leg.plan_alt * 0.3048)
-            else:
-                alt_val = int(leg.plan_alt)
-            
-            combined_str = f"{spd_str}/{alt_val}"
-            s_alt = self.font_mono.render(combined_str, True, C_GREEN_NAV)
+            alt_val = int(leg.plan_alt * 0.3048) if self.use_metric else int(leg.plan_alt)
+            s_alt = self.font_mono.render(f"{spd_str}/{alt_val}", True, C_GREEN_NAV)
             screen.blit(s_alt, (300, y))
             
             pygame.draw.line(screen, (30,30,30), (0, y+25), (SCREEN_W, y+25), 1)
@@ -340,15 +339,11 @@ class NavDisplay:
         dn_color = C_GRAY_LIGHT if can_scroll_back else C_GRAY_DARK
         
         cx_up, cy_up = self.btn_up_rect.centerx, self.btn_up_rect.centery
-        pts_up = [(cx_up, cy_up - 10), (cx_up - 10, cy_up + 10), (cx_up + 10, cy_up + 10)]
-        pygame.draw.polygon(screen, up_color, pts_up)
+        pygame.draw.polygon(screen, up_color, [(cx_up, cy_up - 10), (cx_up - 10, cy_up + 10), (cx_up + 10, cy_up + 10)])
         
         cx_dn, cy_dn = self.btn_dn_rect.centerx, self.btn_dn_rect.centery
-        pts_dn = [(cx_dn, cy_dn + 10), (cx_dn - 10, cy_dn - 10), (cx_dn + 10, cy_dn - 10)]
-        pygame.draw.polygon(screen, dn_color, pts_dn)
+        pygame.draw.polygon(screen, dn_color, [(cx_dn, cy_dn + 10), (cx_dn - 10, cy_dn - 10), (cx_dn + 10, cy_dn - 10)])
 
-    # --- DRAW POPUP ---
-    
     def _draw_popup_menu(self, screen):
         leg = self.fms.legs[self.selected_leg_idx]
         title = self.font_m.render(f"WPT: {leg.ident}", True, C_CYAN)
@@ -369,13 +364,10 @@ class NavDisplay:
 
     def _draw_popup_confirm(self, screen):
         leg = self.fms.legs[self.selected_leg_idx]
-        
         title = self.font_m.render("DIRECT TO", True, C_AMBER)
         screen.blit(title, (SCREEN_W//2 - title.get_width()//2, 60))
-        
         msg1 = self.font_s.render(f"FLY DIRECT TO {leg.ident}?", True, C_WHITE)
         msg2 = self.font_s.render("Ignore all previous WPT?", True, C_RED)
-        
         screen.blit(msg1, (SCREEN_W//2 - msg1.get_width()//2, 100))
         screen.blit(msg2, (SCREEN_W//2 - msg2.get_width()//2, 125))
         
@@ -384,7 +376,6 @@ class NavDisplay:
         
         t_y = self.font_m.render("YES", True, C_BLACK)
         t_n = self.font_m.render("NO", True, C_WHITE)
-        
         screen.blit(t_y, t_y.get_rect(center=self.rect_confirm_yes.center))
         screen.blit(t_n, t_n.get_rect(center=self.rect_confirm_no.center))
 
@@ -415,13 +406,11 @@ class NavDisplay:
             pygame.draw.rect(screen, C_GRAY_LIGHT, rect, 1)
             t = self.font_key.render(key, True, C_WHITE)
             screen.blit(t, t.get_rect(center=rect.center))
-            
-    
+
     def handle_click(self, pos):
         x, y = pos
-        
-        # NORMAL MODE
         if self.ui_state == STATE_NORMAL:
+            # 1. LIST CLICK
             for i, rect in enumerate(self.list_click_rects):
                 if rect.collidepoint(x, y):
                     self.is_holding = True
@@ -429,29 +418,30 @@ class NavDisplay:
                     self.pressed_row_idx = i
                     return 
 
-            # SCROLL LOGIC
+            # 2. ACTIVE PANEL CLICK (NEW)
+            if self.rect_active_panel.collidepoint(x, y):
+                 if self.fms.active_idx < len(self.fms.legs):
+                    self.is_holding = True
+                    self.press_start_time = time.time()
+                    self.pressed_row_idx = -1
+                    return
+
+            # 3. BUTTONS
             if self.btn_up_rect.collidepoint(pos):
-                 base_idx = self.fms.active_idx + 1
-                 total_remaining = len(self.fms.legs) - base_idx
-                 if (self.scroll_offset + self.max_rows) < total_remaining:
-                    self.scroll_offset += 1
-            
+                 total_remaining = len(self.fms.legs) - (self.fms.active_idx + 1)
+                 if (self.scroll_offset + self.max_rows) < total_remaining: self.scroll_offset += 1
             elif self.btn_dn_rect.collidepoint(pos):
                 self.scroll_offset = max(0, self.scroll_offset - 1)
-
-            if self.btn_refresh_rect.collidepoint(pos):
+            elif self.btn_refresh_rect.collidepoint(pos):
                 print("Force refreshing SimBrief...")
                 self.fms.fetch_simbrief(force_download=True)
                 self.scroll_offset = 0
-            if self.rect_alt_toggle.collidepoint(pos):
+            elif self.rect_alt_toggle.collidepoint(pos):
                 self.use_metric = not self.use_metric
             return
 
-        # MENU MODE
         if self.ui_state == STATE_MENU:
-            if self.rect_menu_dct.collidepoint(pos):
-                self.ui_state = STATE_CONFIRM_DCT
-            
+            if self.rect_menu_dct.collidepoint(pos): self.ui_state = STATE_CONFIRM_DCT
             elif self.rect_menu_spd.collidepoint(pos):
                 self.ui_state = STATE_INPUT_SPD
                 leg = self.fms.legs[self.selected_leg_idx]
@@ -461,7 +451,6 @@ class NavDisplay:
                 else:
                     self.input_is_metric = False 
                     self.input_buffer = str(int(leg.plan_spd_kmh))
-            
             elif self.rect_menu_alt.collidepoint(pos):
                 self.ui_state = STATE_INPUT_ALT
                 leg = self.fms.legs[self.selected_leg_idx]
@@ -475,7 +464,6 @@ class NavDisplay:
                 self.ui_state = STATE_NORMAL
             return
 
-        # DIRECT TO
         if self.ui_state == STATE_CONFIRM_DCT:
             if self.rect_confirm_yes.collidepoint(pos):
                 self.fms.set_direct_to(self.selected_leg_idx)
@@ -485,53 +473,32 @@ class NavDisplay:
                 self.ui_state = STATE_NORMAL
             return
 
-        # KEYBOARD INPUT
         if self.ui_state in [STATE_INPUT_SPD, STATE_INPUT_ALT]:
             if self.rect_input_display.collidepoint(pos):
                 self.input_is_metric = not self.input_is_metric
                 self.input_buffer = "" 
                 return
-
             for rect, key in self.keypad_rects:
                 if rect.collidepoint(pos):
-                    if key == 'C':
-                        self.input_buffer = ""
+                    if key == 'C': self.input_buffer = ""
                     elif key == '>':
                         self._submit_input()
                         self.ui_state = STATE_NORMAL
                     else:
-                        if len(self.input_buffer) < 6: 
-                            self.input_buffer += key
+                        if len(self.input_buffer) < 6: self.input_buffer += key
                     return
-            
             self.ui_state = STATE_NORMAL
 
     def _submit_input(self):
         if not self.input_buffer: return
-        
         try:
-            val_str = self.input_buffer
-            
-            val = float(val_str)
-            
+            val = float(self.input_buffer)
             if self.ui_state == STATE_INPUT_SPD:
                 is_mach = self.input_is_metric
-                
-                if is_mach and val > 2.0: 
-                    val = val / 100.0
-                    
-                self.fms.modify_leg_constraint(
-                    self.selected_leg_idx, 
-                    spd=val, 
-                    is_mach=is_mach
-                )
-                
+                if is_mach and val > 2.0: val = val / 100.0
+                self.fms.modify_leg_constraint(self.selected_leg_idx, spd=val, is_mach=is_mach)
             elif self.ui_state == STATE_INPUT_ALT:
-                self.fms.modify_leg_constraint(
-                    self.selected_leg_idx, 
-                    alt=val, 
-                    is_metric=self.input_is_metric
-                )
+                self.fms.modify_leg_constraint(self.selected_leg_idx, alt=val, is_metric=self.input_is_metric)
         except ValueError:
             print("Invalid Input")
 
