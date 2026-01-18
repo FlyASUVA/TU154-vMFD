@@ -1,0 +1,64 @@
+# config.py
+
+import os
+
+UDP_IP = "0.0.0.0"
+UDP_PORT = 49000 #For Raspberry Pi use 49000
+FPS = 30 
+
+SCREEN_W = 480
+SCREEN_H = 320
+
+C_BLACK = (0, 0, 0)
+C_GRAY_DARK = (40, 40, 40)
+C_GRAY_LIGHT = (160, 160, 160)
+C_WHITE = (230, 230, 230)
+C_GREEN = (0, 200, 0)
+C_AMBER = (255, 180, 0)
+C_RED = (255, 50, 50)
+C_BLUE = (50, 150, 255)
+C_CYAN = (0, 255, 255)
+
+C_GREEN_NAV = (0, 255, 0)
+C_MAGENTA = (255, 0, 255)
+
+C_BTN_ACTIVE = (0, 80, 0) 
+C_BTN_INACTIVE = (30, 30, 30)
+
+
+LIMIT_N1_MAX = 105.0
+LIMIT_N1_TARGET = 92.0
+
+LIMIT_EGT_CAUTION = 600.0 
+LIMIT_EGT_MAX = 675.0
+
+LIMIT_OIL_MIN = 25.0
+
+
+CG_SLOPE = 5.8037
+CG_INTERCEPT = 47.62
+
+
+CG_LIMIT_FWD_TO_CTR = 28.0
+CG_LIMIT_CTR_TO_AFT = 35.0
+
+
+BUTTON_HEIGHT = 40
+BUTTON_Y = SCREEN_H - BUTTON_HEIGHT  # 280
+BTN_NAMES = ["ENG", "NAV", "ISIS", "ADV"]
+
+# --- SimBrief Config Here---
+SIMBRIEF_USERNAME = "" 
+SIMBRIEF_API_URL = "https://www.simbrief.com/api/xml.fetcher.php"
+
+
+
+DESCENT_GRADIENT_FT_NM = 318.0
+
+
+SHOW_METRIC_ALT = True 
+SHOW_METRIC_DIST = True 
+
+
+USE_LOCAL_DATA = True   
+LOCAL_FILE_PATH = "fpl.json"
