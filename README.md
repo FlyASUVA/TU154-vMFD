@@ -1,11 +1,11 @@
 # TU154-vMFD (English Version Readme)
 A virtual MFD and TCDU (Touchscreen Control Display Unit) for Felis Tu154B2 (CE)
+Link to the Tu154 Felis CE Project: **Tu-154 Felis CE Project:** [Unicode4all/Tu-154B2-CE](https://github.com/Unicode4all/Tu-154B2-CE)
 
 # 这都是图啥呢  
 *What are all these "Tu"s anyway?* - A meme from Chinese Internet.
 
-*![53599021dd0c215da061314add9589c9](https://github.com/user-attachments/assets/83304ca4-a408-4065-b00b-7709774ecfd3)*
-
+<img src="https://github.com/user-attachments/assets/83304ca4-a408-4065-b00b-7709774ecfd3" width="320" height="640" alt="这都是图啥呢">
 
 **This project explores whether a legacy aircraft like the Tu-154 can be operated using modern RNAV and RNP Procedures — not by modifying the aircraft itself, but by building an external, experimental guidance system from scratch.**
 
