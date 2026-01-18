@@ -108,7 +108,7 @@ Edit `config.py` to match your network environment:
 * **UDP_IP:** Set to `0.0.0.0` (to listen on all interfaces) or your Pi's specific LAN IP.
 * **UDP_PORT:** Default is `49000`. Make sure X-Plane sends data to this port.
 * **Simbrief Username:** Default is empty . make sure you add your own username or the FMS will not work.
-* 
+
 #### 4. Kiosk Mode (Auto-Start)
 
 To make the Pi boot directly into the MFD software (bypassing the desktop):
