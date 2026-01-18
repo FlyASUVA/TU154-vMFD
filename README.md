@@ -112,13 +112,13 @@ This project challenges that assumption — not by pretending the aircraft is mo
 -（Screenshot showcased are from the development phase, some functions are updated with minor variation)
 ## How to Use?
 
-For Windows users 
+**For Windows users** 
 
 - (you guys are lucky by the way, as it's originally designed as an embedded software)
 - download the **standalone exe** file on the release folder, and run it with your Xplane's UDP port 49071 open, and send data to your PC's LAN address.
 - Don't forget to enable the specified ID's required for the UDP data in XPlane 12! (read the pop up window)
 
-For Raspberry Pi User:
+**For Raspberry Pi User**
 
 - You are welcome to build this as your own physical Flight Deck Unit! The Raspberry Pi release is called *Project PiCDU*.
 - This version of project is optimized for **Raspberry Pi 4/5** running **Raspberry Pi OS (Bookworm/Trixie)** with a **Waveshare DSI/SPI Touchscreen**. You're welcomed to experimenting with all kind of hardware (if it runs, it runs).
