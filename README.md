@@ -41,10 +41,10 @@ The system focuses on **procedural guidance**, **state-driven navigation logic**
 - ✅ VNKT RNP-AR departure (02) tested using Felis 154CE
 - ✅ VQPR RNP-AR approach to RWY 15 successfully flown using Felis 154CE
 - ✅ Continuous Climb Operation (CCO) and Continuous Descend Operation (CDO) can be achieved by its VNAV PATH function.
-- ⚠️ VNAV PATH is not 100% work all the time, we are still test and fixing it
+- ⚠️ VNAV PATH is not 100% work all the time, we are still testing and fixing it
 - ⚠️ Do SPEED and ALT INTV for your next WPTs, before it become your active target WPT.
 - ⚠️ VDEV function is marginally working on the ISIS display. We are still working on it to make sure it's not buggy.
-- ⚠️ This is **not certified avionics**, and never claims to be
+- ⚠️ This is **not certified avionics**, and never claims to be.
 
 This project is **experimental, educational, and exploratory** by design.
 
