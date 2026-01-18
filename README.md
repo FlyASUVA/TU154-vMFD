@@ -17,7 +17,7 @@ Originally inspired by a Chinese internet meme that jokingly groups Tu-22, Tu-16
 
 ## What this project is:
 
-- An **experimental flight guidance display**, consisting **EICAS, FMS FPLAN PAGE, ISIS, and More**
+- An **experimental flight guidance display**, consisting **EICAS, FMS FPLAN LEGS PAGE, ISIS, and More**
 - Utilizing existing Simbrief API and X-Plane 12's UDP Output.
 - Works with Felis Tu-154 B2 Community Edition (for Xplane 12)
 - Designed specifically around the **Tu-154 operational philosophy** with a modern glass cockpit hint
@@ -45,9 +45,9 @@ This project challenges that assumption — not by pretending the aircraft is mo
 
 ## Current status
 
-- ✅ VNKT RNP-AR departure (02) tested
-- ✅ VQPR RNP-AR approach to RWY 15 successfully flown
-- ⚠️ Only **one successful full flight** so far
+- ✅ VNKT RNP-AR departure (02) tested using Felis 154CE
+- ✅ VQPR RNP-AR approach to RWY 15 successfully flown using Felis 154CE
+- ✅ Continuous Climb Operation (CCO) and Continuous Descend Operation (CDO) can be achieved by its VNAV PATH function.
 - ⚠️ This is **not certified avionics**, and never claims to be
 
 This project is **experimental, educational, and exploratory** by design.
