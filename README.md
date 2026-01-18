@@ -111,19 +111,19 @@ For Raspberry Pi User:
 - Please do what the windows users do in the X-Plane first, open UDP port 49000 instead of 49071 and send data to your Raspberry Pi's LAN Address.
 - The IDs required for Xplane UDP Output are
 
-        "● BASIC: 3, 4, 17, 20\n"
-        "● WX/ENV: 152\n"
-        "● WEIGHT: 63\n"
-        "● CTRLS: 13, 14, 33, 74\n"
-        "● ENG: 27, 41, 45, 47, 49\n"
-        "● NAV: 97, 98, 99, 100\n"
-        "--------------------------------------------------\n\n"
-        "Full Details:\n"
-        "3 (Speed), 4 (Mach/G), 17 (Pitch/Roll), 20 (Lat/Lon/Alt)\n"
-        "152 (Point Wx), 63 (Payload)\n"
-        "13 (Flaps/Trim), 14 (Gear), 33 (Starter), 74 (Elevator)\n"
-        "27 (Beta/Rev), 41 (N1), 45 (FF), 47 (EGT), 49 (Oil)\n"
-        "97 (Nav Freq), 98 (OBS), 99/100 (Nav Deflection)\n"
+        "BASIC: 3, 4, 17, 20"
+        "● WX/ENV: 152"
+        "● WEIGHT: 63"
+        "● CTRLS: 13, 14, 33, 74"
+        "● ENG: 27, 41, 45, 47, 49"
+        "● NAV: 97, 98, 99, 100"
+  
+        "Full Details:"
+        "3 (Speed), 4 (Mach/G), 17 (Pitch/Roll), 20 (Lat/Lon/Alt)"
+        "152 (Point Wx), 63 (Payload)"
+        "13 (Flaps/Trim), 14 (Gear), 33 (Starter), 74 (Elevator)"
+        "27 (Beta/Rev), 41 (N1), 45 (FF), 47 (EGT), 49 (Oil)"
+        "97 (Nav Freq), 98 (OBS), 99/100 (Nav Deflection)"
 
 #### 1. System Dependencies
 
