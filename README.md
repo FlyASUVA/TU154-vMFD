@@ -51,6 +51,7 @@ This project challenges that assumption — not by pretending the aircraft is mo
 - Approach CG lever Advisory: Automatic CG lever position advisory and STAB trim advisory based on current CG.
 - Engine Monitoring: Automatic Start Recognition. Tape-style N2 display (simulating thrust) with dual takeoff thrust bugs. Automatic EGT display with overheat warning. Individual Fuel Flow indicators for each engine.
 - FPLAN Display System: Integrated Flight Plan display with VNAV PATH, DCT TO, SPEED INTV, and ALT INTV, operated via a virtual keypad.
+- Meter/ Feet and Mach/KM unit toggle on NAV page (press the ALT REQ), and on SPEED INTV / ALT INTV window (press the input box).
 - Auto-Sync: FPLAN Page automatically synchronizes to the nearest active waypoint.
 - Phase Detection: Automatic Flight Phase sensing (TO/CLB/CRZ/DES). VNAV Target VS function is inhibited during Takeoff.
 - ISFD (Integrated Standby Flight Display): Displays IAS, Heading, GPS Altitude with trend vectors. Experimental VDEV (Vertical Deviation) indicator.
