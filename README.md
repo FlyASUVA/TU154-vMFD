@@ -31,6 +31,7 @@ The system focuses on **procedural guidance**, **state-driven navigation logic**
 
 ## What else do we also offer here:
 - A standalone windows exe file that you can run the same program on your own PC (If you are unwilling to use it on a raspberry pi)
+- The Windows exe version can use your keyboard to input SPD INTV and ALT INTV data
 ---
 
 ## Why Tu-154?
@@ -43,6 +44,57 @@ This project challenges that assumption — not by pretending the aircraft is mo
 - How far can good guidance compensate for the lack of integrated avionics?
 
 ---
+
+## Function Included
+
+- Takeoff Config Monitor: Automatic configuration warning at takeoff.
+- Approach CG lever Advisory: Automatic CG lever position advisory and STAB trim advisory based on current CG.
+- Engine Monitoring: Automatic Start Recognition. Tape-style N2 display (simulating thrust) with dual takeoff thrust bugs. Automatic EGT display with overheat warning. Individual Fuel Flow indicators for each engine.
+- FPLAN Display System: Integrated Flight Plan display with VNAV PATH, DCT TO, SPEED INTV, and ALT INTV, operated via a virtual keypad.
+- Auto-Sync: FPLAN Page automatically synchronizes to the nearest active waypoint.
+- Phase Detection: Automatic Flight Phase sensing (TO/CLB/CRZ/DES). VNAV Target VS function is inhibited during Takeoff.
+- ISFD (Integrated Standby Flight Display): Displays IAS, Heading, GPS Altitude with trend vectors. Experimental VDEV (Vertical Deviation) indicator.
+- Performance Tools: Pre-Flight Page showing SimBrief aircraft loading weights.
+- Flight Progress: Real-time endurance calculation and VDEV monitoring.
+- Airport Info: Displays Takeoff and Landing airport data, including departure ATIS and arrival METAR (via SimBrief).
+- Notam Integration: Displays SimBrief NOTAMs directly on the unit.
+- System Control (Raspberry Pi): Power Menu accessible by long-pressing the ADV button, featuring real-time WiFi status.
+  
+<table border="0">
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/c53d85a9-4e5f-4e0e-ba8d-7e83fca4d8f7" width="100%" />
+    </td>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/349ecc45-f032-434a-8843-d0e91a7c66be" width="100%" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/a815c4dc-f23b-49c7-a28c-b92e36d4c527" width="100%" />
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/b973cbd9-5323-4bda-b2fc-5e5af666c1db" width="100%" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/cfc99b6e-24fc-45bc-9090-1692cbbdba8b" width="100%" />
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/27693946-75c5-4508-b0dd-c9e442b58cea" width="100%" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/b9c1685a-f1a0-4333-8e8b-087479d7d5b2" width="100%" />
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/c69931b8-f2c1-4f5f-a1e0-61768240353e" width="100%" />
+    </td>
+  </tr>
+</table>
+
 
 ## How to Use?
 
@@ -158,6 +210,9 @@ python3 main.py
 - ✅ VNKT RNP-AR departure (02) tested using Felis 154CE
 - ✅ VQPR RNP-AR approach to RWY 15 successfully flown using Felis 154CE
 - ✅ Continuous Climb Operation (CCO) and Continuous Descend Operation (CDO) can be achieved by its VNAV PATH function.
+- ⚠️ VNAV PATH is not 100% work all the time, we are still test and fixing it
+- ⚠️ Do SPEED and ALT INTV for your next WPTs, before it become your active target WPT.
+- ⚠️ VDEV function is marginally working on the ISIS display. We are still working on it to make sure it's not buggy.
 - ⚠️ This is **not certified avionics**, and never claims to be
 
 This project is **experimental, educational, and exploratory** by design.
