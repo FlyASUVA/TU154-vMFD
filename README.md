@@ -95,7 +95,7 @@ This project challenges that assumption — not by pretending the aircraft is mo
   </tr>
 </table>
 
-
+-（Screenshot showcased are from the development phase, some functions are updated with minor variation)
 ## How to Use?
 
 For Windows users 
