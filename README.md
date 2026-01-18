@@ -1,5 +1,5 @@
 # TU154-vMFD
-A virtual MFD Style TCDU for Felis Tu154B2 (CE)
+A virtual MFD and TCDU (Touchscreen Control Display Unit) for Felis Tu154B2 (CE)
 
 # 这都是图啥呢  
 *What are all these "Tu"s anyway?* - A meme from Chinese Internet.
