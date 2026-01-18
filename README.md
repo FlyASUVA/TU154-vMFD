@@ -173,6 +173,7 @@ This project is **experimental, educational, and exploratory** by design.
 
 ---
 
-## License & openness
+## By Sim Pilots, For Sim Pilots
 
 This project is open-sourced as a form of **technical reciprocity** — without open-source communities, it would never have existed.
+Special Thanks for the supporting members in the Felis Discord Server!
