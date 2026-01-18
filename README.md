@@ -1,4 +1,4 @@
-![53599021dd0c215da061314add9589c9](https://github.com/user-attachments/assets/f949316c-3e5f-45df-9850-d12aa91b5d29)# TU154-vMFD
+# TU154-vMFD
 A virtual MFD Style TCDU for Felis Tu154B2 (CE)
 
 # 这都是图啥呢  
