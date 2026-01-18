@@ -18,7 +18,7 @@ Originally inspired by a Chinese internet meme that jokingly groups Tu-22, Tu-16
 
 ## What this project is:
 
-- An **experimental flight guidance display**, consisting **EICAS, FMS FPLAN LEGS PAGE, ISIS, and More**
+- An **experimental flight information display**, consisting **EICAS, FMS FPLAN LEGS PAGE, ISIS, and More**
 - Utilizing existing Simbrief API and X-Plane 12's UDP Output.
 - Works with Felis Tu-154 B2 Community Edition (for Xplane 12)
 - Designed specifically around the **Tu-154 operational philosophy** with a modern glass cockpit hint
