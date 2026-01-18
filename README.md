@@ -29,10 +29,24 @@ Originally inspired by a Chinese internet meme that jokingly groups Tu-22, Tu-16
 
 The system focuses on **procedural guidance**, **state-driven navigation logic**, and **pilot-assisting cues** rather than full FMC replacement.
 
-## What else do we also offer here:
-- A standalone windows exe file that you can run the same program on your own PC (If you are unwilling to use it on a raspberry pi)
-- The Windows exe version can use your keyboard to input SPD INTV and ALT INTV data
----
+## What this project is NOT
+
+- ❌ Not a real-world avionics system
+- ❌ Not a certified navigation solution
+- ❌ Not a Tu-154 systems simulation
+- ❌ Not a drop-in FMC replacement
+
+## Current status
+
+- ✅ VNKT RNP-AR departure (02) tested using Felis 154CE
+- ✅ VQPR RNP-AR approach to RWY 15 successfully flown using Felis 154CE
+- ✅ Continuous Climb Operation (CCO) and Continuous Descend Operation (CDO) can be achieved by its VNAV PATH function.
+- ⚠️ VNAV PATH is not 100% work all the time, we are still test and fixing it
+- ⚠️ Do SPEED and ALT INTV for your next WPTs, before it become your active target WPT.
+- ⚠️ VDEV function is marginally working on the ISIS display. We are still working on it to make sure it's not buggy.
+- ⚠️ This is **not certified avionics**, and never claims to be
+
+This project is **experimental, educational, and exploratory** by design.
 
 ## Why Tu-154?
 
@@ -206,28 +220,6 @@ python3 main.py
 
 ---
 
-## Current status
-
-- ✅ VNKT RNP-AR departure (02) tested using Felis 154CE
-- ✅ VQPR RNP-AR approach to RWY 15 successfully flown using Felis 154CE
-- ✅ Continuous Climb Operation (CCO) and Continuous Descend Operation (CDO) can be achieved by its VNAV PATH function.
-- ⚠️ VNAV PATH is not 100% work all the time, we are still test and fixing it
-- ⚠️ Do SPEED and ALT INTV for your next WPTs, before it become your active target WPT.
-- ⚠️ VDEV function is marginally working on the ISIS display. We are still working on it to make sure it's not buggy.
-- ⚠️ This is **not certified avionics**, and never claims to be
-
-This project is **experimental, educational, and exploratory** by design.
-
----
-
-## What this project is NOT
-
-- ❌ Not a real-world avionics system
-- ❌ Not a certified navigation solution
-- ❌ Not a Tu-154 systems simulation
-- ❌ Not a drop-in FMC replacement
-
----
 
 ## By Sim Pilots, For Sim Pilots
 
