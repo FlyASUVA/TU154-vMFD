@@ -5,11 +5,8 @@ A virtual MFD and TCDU (Touchscreen Control Display Unit) for Felis Tu154B2 (CE)
 
 # 这都是图啥呢  
 *What are all these "Tu"s anyway?* - A meme from Chinese Internet.
-
-<img src="https://github.com/user-attachments/assets/83304ca4-a408-4065-b00b-7709774ecfd3" width="320" height="640" alt="这都是图啥呢">
-
 **This project explores whether a legacy aircraft like the Tu-154 can be operated using modern RNAV and RNP Procedures — not by modifying the aircraft itself, but by building an external, experimental guidance system from scratch.**
-
+<img src="https://github.com/user-attachments/assets/83304ca4-a408-4065-b00b-7709774ecfd3" width="320" height="640" alt="这都是图啥呢">
 Originally inspired by a Chinese internet meme that jokingly groups Tu-22, Tu-160, Tu-128 and Tu-16s together as “a pile of Tupolevs”, this project takes the joke seriously and turns it into an engineering question:
 
 > *If life gives you lemon, make lemonade.*
