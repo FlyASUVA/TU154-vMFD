@@ -7,7 +7,7 @@ from eicas import EICAS
 from isfd_display import ISFDDisplay
 from nav_display import NavDisplay
 from fms_core import FMSCore
-from adv_display import AdvDisplay  
+from adv_display import AdvDisplay   
 from config import *
 
 import subprocess
@@ -46,7 +46,8 @@ rect_shutdown    = pygame.Rect(CENTER_X - BTN_SYS_W//2, MENU_START_Y + MENU_GAP*
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_W, SCREEN_H), pygame.FULLSCREEN)
-    pygame.display.set_caption("Tu-154 MFD Terminal")
+
+    pygame.display.set_caption("Tu-154 MFD Terminal (Pi Edition)")
     clock = pygame.time.Clock()
 
     last_net_check = 0
@@ -54,7 +55,6 @@ def main():
 
     link = DataLink()
     link.start()
-
     print("Initializing FMS Core...")
     shared_fms = FMSCore()
     shared_fms.fetch_simbrief() 
@@ -74,13 +74,13 @@ def main():
     
     show_power_menu = False
 
-    print("--- Tu-154 MFD System Started ---")
+    print("--- Tu-154 MFD System Started (Embedded Mode) ---")
 
     try:
         while True:
             current_time = time.time()
 
-            if current_time - last_net_check > 2.0:
+            if current_time - last_net_check > 10.0:
                 net_status_text = get_network_info()
                 last_net_check = current_time
 
@@ -118,7 +118,7 @@ def main():
                             page_nav.handle_click((x, y))
                         elif current_page == "ADV" and y < BUTTON_Y:
                             page_adv.handle_click((x, y))
-
+                            
                         if y >= BUTTON_Y:
                             if len(BTN_NAMES) > 0:
                                 btn_w = SCREEN_W // len(BTN_NAMES)
@@ -135,9 +135,16 @@ def main():
                                         current_page = btn_name
                                         print(f"Switch to page: {current_page}")
 
-                if event.type == pygame.MOUSEBUTTONUP:
+                elif event.type == pygame.MOUSEBUTTONUP:
                     is_adv_pressed = False
+                    
+                    if current_page == "NAV" and not show_power_menu:
+                        page_nav.handle_mouseup()
 
+                elif event.type == pygame.KEYDOWN:
+                    if current_page == "NAV" and not show_power_menu:
+                        page_nav.handle_keydown(event)
+                        
             if is_adv_pressed and not show_power_menu:
                 duration = current_time - adv_press_start_time
                 if duration > LONG_PRESS_DURATION:
@@ -152,18 +159,17 @@ def main():
             if abs(lat) > 0.1:
                 total_fuel = data.get('total_fuel_kg', 0)
                 total_ff = data.get('total_ff_kg_hr', 0) 
-                
                 baro_in_hg = data.get('baro', 29.92) 
 
                 shared_fms.update(
                     lat, 
-                    data.get('lon', 0),
-                    data.get('alt_msl_ft', 0),
-                    data.get('gs_kt', 0),
-                    total_fuel,
-                    total_ff,
-                    baro_in_hg,
-                    current_time
+                    data.get('lon', 0), 
+                    data.get('alt_msl_ft', 0), 
+                    data.get('gs_kt', 0), 
+                    total_fuel,      
+                    total_ff,        
+                    baro_in_hg,      
+                    current_time     
                 )
 
             if show_power_menu:
