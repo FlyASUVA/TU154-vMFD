@@ -31,7 +31,7 @@ class NavDisplay:
         self.press_start_time = 0
         self.pressed_row_idx = -1
         self.is_holding = False
-        self.LONG_PRESS_THRESHOLD = 1.0 
+        self.LONG_PRESS_THRESHOLD = 0.5 
         
         self.input_buffer = ""
         self.input_is_metric = False 
