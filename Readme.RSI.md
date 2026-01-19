@@ -68,6 +68,8 @@ The aircraft indicator updates in real-time, changing color to warn pilots if th
     * **Dot Inside Circle**: You are too close (< Target DME). Turn outward.
     * **Dot Outside Circle**: You are too far (> Target DME). Turn inward.
     * **Dot On Circle**: You are perfectly tracking the arc.
+    * 
+**RSI is NOT an autopilot. It is a targeting scope.** It requires you to **manually turn the HDG/ZK knob**. It turns the complex navigation task into a simple video game.
     
     **追踪光点**：
     * **光点在圈内**：距离太近，需向外转。
