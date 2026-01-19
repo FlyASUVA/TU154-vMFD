@@ -57,8 +57,8 @@ The aircraft indicator updates in real-time, changing color to warn pilots if th
 | **FROM Radial** | <span style="color:cyan">**Cyan**</span> | The reciprocal radial (Tail). <br> 反向径向线（背台/切出方向）。 |
 
 ---
-**RSI is NOT an autopilot. It is a targeting scope.** It requires you to **manually turn the HDG/ZK knob**.(Turn 10 twist 19) It turns the complex navigation task into a simple video game.
-RSI 不负责替你飞，它负责指挥你飞。 它把复杂的程序飞行简化成了钻圈圈，你只需要像个莫得感情的转钮机器 （飞10转10).
+- **RSI is NOT an autopilot. It is a targeting scope.** It requires you to **manually turn the HDG/ZK knob**.(Turn 10 twist 10) It turns the complex navigation task into a simple video game.
+- RSI 不负责替你飞，它负责指挥你飞。 它把复杂的程序飞行简化成了钻圈圈，你只需要像个莫得感情的转钮机器 （飞10转10).
 
 ## Usage | 使用说明
 
