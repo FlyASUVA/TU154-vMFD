@@ -6,6 +6,9 @@ This is an fictional instrument. The RSI transforms the complex mental math of f
 
 这是一个现实中不存在的领航仪表。RSI 将飞 DME 弧时复杂的脑力计算转化为简单的视觉任务。通过将飞机位置映射到以导航台为中心的刻度上，飞行员只需保持光点在圆周上即可轻松维持DME弧程序飞行。
 
+<img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/c1d6cbd5-2786-46a0-bbf9-da36048f71fc" />
+
+
 ---
 
 ## Key Features | 核心功能
