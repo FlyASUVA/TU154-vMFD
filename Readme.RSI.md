@@ -4,6 +4,7 @@
 > **图-154 vMFD 项目的自定义态势感知仪表。**
 
 ## "No Pain, No Gain. No Brain, No Pain."
+为了对付一些hand hands lord lords的情况研发出了此仪表
 
 This is a fictional instrument. The RSI transforms the complex mental math of flying a DME Arc into a simple visual task. By mapping the aircraft's position relative to a station-centered scale, pilots can maintain the arc simply by keeping the indicator dot on the circle.
 
