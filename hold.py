@@ -290,14 +290,13 @@ class HoldPage:
         offset = 1 if self.turn_dir == 'R' else -1
         
         # --- A. Straight Legs ---
-        # Inbound (Solid, Cyan)
+        # Inbound
         pygame.draw.line(track_surf, C_CYAN, (tcx, tcy+l_px), (tcx, tcy), 3)
         
-        # Outbound (Dashed, Gray) - Calculate X based on offset
         out_x = tcx + (r_px * 2 * offset)
         pygame.draw.line(track_surf, (100,100,100), (out_x, tcy), (out_x, tcy+l_px), 2)
         
-        # --- B. Semicircle Arcs (Simplified Logic) ---
+        # --- B. Semicircle Arcs ---
         # Calculate center X for arcs (Midpoint between Inbound and Outbound lines)
         center_arc_x = (tcx + out_x) / 2
         
@@ -343,7 +342,6 @@ class HoldPage:
         color = C_GREEN if not is_clipped else C_AMBER
         pygame.draw.polygon(screen, color, [tip, wl, wr])
         
-        # 4. Auxiliary Info
         screen.blit(self.font_s.render("N", True, (150,150,150)), (cx-5, map_area.top + 5))
         rng_val = int(map_area.height / 2 / scale)
         screen.blit(self.font_s.render(f"RNG: {rng_val} NM", True, (100,100,100)), (map_area.left + 5, map_area.bottom - 18))
