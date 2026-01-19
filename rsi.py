@@ -97,7 +97,10 @@ class StepperControl:
         screen.blit(txt_plus, txt_plus.get_rect(center=self.rect_plus.center))
 
     def handle_click(self, pos):
-        pass
+        if self.rect_minus.collidepoint(pos):
+            self._change_value(-1) # 点击减号立即减1
+        elif self.rect_plus.collidepoint(pos):
+            self._change_value(1)
 
 class RSIPage:
     def __init__(self, fms, data_link):
@@ -358,4 +361,7 @@ class RSIPage:
         if self.rect_mode_toggle.collidepoint(pos):
             self.cw_mode = not self.cw_mode
             return None
+        self.input_in.handle_click(pos)
+        self.input_out.handle_click(pos)
+        self.input_dme.handle_click(pos)
         return None
