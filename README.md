@@ -74,6 +74,7 @@ This project challenges that assumption — not by pretending the aircraft is mo
 - Airport Info: Displays Takeoff and Landing airport data, including departure ATIS and arrival METAR (via SimBrief).
 - Notam Integration: Displays SimBrief NOTAMs directly on the unit.
 - System Control (Raspberry Pi): Power Menu accessible by long-pressing the ADV button, featuring real-time WiFi status.
+- Experimental Functions: [RSI 无线电态势指示器](Readme.RSI.md)
   
 <table border="0">
   <tr>
