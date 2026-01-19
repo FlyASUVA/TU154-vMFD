@@ -2,6 +2,8 @@ import pygame
 import math
 import time
 from config import *
+from rsi import RSIPage
+from hold import HoldPage
 
 # --- Tab IDs (Order: PERF, APPR, NAV, NOTAM, PROG) ---
 TAB_PERF    = 0
@@ -9,6 +11,8 @@ TAB_AIRPORT = 1
 TAB_NAVRAD  = 2
 TAB_NOTAM   = 3
 TAB_PROG    = 4
+TAB_RSI     = 5 
+TAB_HOLD    = 6
 
 class AdvDisplay:
     def __init__(self, shared_fms, data_link):
@@ -22,6 +26,16 @@ class AdvDisplay:
         self.font_l = pygame.font.SysFont("arial", 24, bold=True)
         self.font_mono = pygame.font.SysFont("consolas", 18, bold=True)
         self.font_mono_l = pygame.font.SysFont("consolas", 22, bold=True)
+
+        # Initialize RSI Page
+        self.rsi_page = RSIPage(shared_fms, data_link)
+
+        # Initialize Hold Page
+        self.hold_page = HoldPage(shared_fms, data_link)
+        
+        # [NEW] Rects for NAV1 Click & Hold Button
+        self.rect_nav1_click = pygame.Rect(10, 80, 200, 80) 
+        self.rect_hold_btn = pygame.Rect(380, 80, 40, 20)
         
         # --- State ---
         self.current_tab = TAB_PROG 
@@ -70,6 +84,12 @@ class AdvDisplay:
         if self.current_tab == TAB_PROG: self._draw_page_prog(screen)
         elif self.current_tab == TAB_AIRPORT: self._draw_page_airport(screen)
         elif self.current_tab == TAB_NAVRAD: self._draw_page_navrad(screen)
+        elif self.current_tab == TAB_RSI:
+            self.rsi_page.update(screen)
+        elif self.current_tab == TAB_HOLD: 
+            self.hold_page.update(screen)
+        elif self.current_tab == TAB_PERF: self._draw_page_perf(screen)
+        elif self.current_tab == TAB_NOTAM: self._draw_page_notam(screen)
         elif self.current_tab == TAB_PERF: self._draw_page_perf(screen)
         elif self.current_tab == TAB_NOTAM: self._draw_page_notam(screen)
         
@@ -78,15 +98,45 @@ class AdvDisplay:
 
     # --- Interaction Logic ---
     def handle_click(self, pos):
+        
+        if pos[1] < 70:
+            if self.rect_tab_prog.collidepoint(pos): 
+                self.current_tab = TAB_PROG
+                return
+            elif self.rect_tab_airport.collidepoint(pos): 
+                self.current_tab = TAB_AIRPORT
+                return
+            elif self.rect_tab_navrad.collidepoint(pos): 
+                self.current_tab = TAB_NAVRAD
+                return
+            elif self.rect_tab_perf.collidepoint(pos): 
+                self.current_tab = TAB_PERF
+                return
+            elif self.rect_tab_notam.collidepoint(pos): 
+                self.current_tab = TAB_NOTAM
+                return
 
-        # Navigation Bar
-        if self.rect_tab_prog.collidepoint(pos): self.current_tab = TAB_PROG
-        elif self.rect_tab_airport.collidepoint(pos): self.current_tab = TAB_AIRPORT
-        elif self.rect_tab_navrad.collidepoint(pos): self.current_tab = TAB_NAVRAD
-        elif self.rect_tab_perf.collidepoint(pos): self.current_tab = TAB_PERF
-        elif self.rect_tab_notam.collidepoint(pos): self.current_tab = TAB_NOTAM
+        # FOR RSI PAGE EXIT
+        if self.current_tab == TAB_RSI:
+            result = self.rsi_page.handle_click(pos)
+            if result == "EXIT":
+                self.current_tab = TAB_NAVRAD
+            return 
 
-        # Page Internals
+        if self.current_tab == TAB_HOLD:
+            self.hold_page.handle_click(pos)
+            return
+            
+        elif self.current_tab == TAB_NAVRAD:
+            # Check NAV 1 Click -> Enter RSI
+            if self.rect_nav1_click.collidepoint(pos):
+                self.current_tab = TAB_RSI
+                print("Switched to RSI Mode")
+            
+            # Check HOLD Button
+            elif self.rect_hold_btn.collidepoint(pos):
+                self.current_tab = TAB_HOLD
+
         elif self.current_tab == TAB_AIRPORT:
             if 80 < pos[1] < self.BOTTOM_LIMIT:
                 modes = ["AUTO", "DEP", "ARR"]
@@ -98,13 +148,13 @@ class AdvDisplay:
             elif self.rect_notam_arr.collidepoint(pos): 
                 self.notam_mode = "ARR"; self.notam_scroll_offset = 0
             
-            # Scroll Up -> Increase Offset
+            # Scroll Up
             elif self.btn_up_rect.collidepoint(pos): 
                 notams = getattr(self.fms, 'origin_notams' if self.notam_mode == "DEP" else 'dest_notams', [])
                 if self.notam_scroll_offset + self.notam_max_rows < len(notams):
                     self.notam_scroll_offset += 1
             
-            # Scroll Down -> Decrease Offset
+            # Scroll Down
             elif self.btn_dn_rect.collidepoint(pos): 
                 if self.notam_scroll_offset > 0: 
                     self.notam_scroll_offset -= 1
@@ -146,15 +196,34 @@ class AdvDisplay:
             t = self.font_s.render(text, True, text_col)
             screen.blit(t, t.get_rect(center=rect.center))
             
+        # 1. PERF Tab
         draw_tab(self.rect_tab_perf, "PERF", self.current_tab == TAB_PERF)
         
+        # 2. TO/APPR Tab (Dynamic)
         label = "TO/APPR"
         if self.airport_toggle == "DEP": label = "TO/WX"
         elif self.airport_toggle == "ARR": label = "APPR/WX"
         draw_tab(self.rect_tab_airport, label, self.current_tab == TAB_AIRPORT)
         
-        draw_tab(self.rect_tab_navrad, "NAV RAD", self.current_tab == TAB_NAVRAD)
+        # 3. NAV RAD / RSI / HOLD Tab TOGGLE
+        nav_label = "NAV RAD"
+        nav_active = False
+        
+        if self.current_tab == TAB_NAVRAD:
+            nav_active = True
+        elif self.current_tab == TAB_RSI:
+            nav_label = "RSI"   # SHOW RSI PAGE
+            nav_active = True
+        elif self.current_tab == TAB_HOLD:
+            nav_label = "HOLD"  # SHOW HOLD PAGE
+            nav_active = True
+            
+        draw_tab(self.rect_tab_navrad, nav_label, nav_active)
+        
+        # 4. NOTAM Tab
         draw_tab(self.rect_tab_notam, "NOTAM", self.current_tab == TAB_NOTAM)
+
+        # 5. PROG Tab
         draw_tab(self.rect_tab_prog, "PROG", self.current_tab == TAB_PROG)
 
     def _draw_scroll_bar(self, screen):
@@ -568,6 +637,7 @@ class AdvDisplay:
 
         # Draw NAV 1 (Y=80)
         draw_status_block(80, "NAV 1", curr_nav1_freq, curr_nav1_obs, curr_nav1_dme)
+        pygame.draw.rect(screen, (30, 40, 30), self.rect_nav1_click, 1, border_radius=5)
         
         # Divider line
         mid_y = 175
@@ -584,6 +654,9 @@ class AdvDisplay:
         y = 80
         
         screen.blit(self.font_m.render("RADIO ASSIST", True, C_CYAN), (list_x, y))
+        pygame.draw.rect(screen, (50, 50, 0), self.rect_hold_btn, border_radius=3)
+        lbl_hold = self.font_xs.render("HOLD", True, C_WHITE)
+        screen.blit(lbl_hold, (self.rect_hold_btn.x + 4, self.rect_hold_btn.y + 2))
         y += 30
         
         headers = ["ID", "FREQ", "DIST", "RAD"]
